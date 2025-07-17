@@ -8,25 +8,21 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-
-const CLASSES = ["6", "7", "8", "9", "10"];
-const TESTS = ["Mid-Term", "Final"];
-
-// Fake uploaded result count for demonstration
-const uploadedResults: Record<string, Record<string, number>> = {
-  "6": { "Mid-Term": 40, Final: 40 },
-  "7": { "Mid-Term": 38, Final: 0 },
-  "8": { "Mid-Term": 0, Final: 39 },
-  "9": { "Mid-Term": 35, Final: 35 },
-  "10": { "Mid-Term": 40, Final: 40 },
-};
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function DashboardPage() {
   const session = await auth();
 
   return (
     <div className="p-6 space-y-8">
+      {/* Welcome */}
       <div>
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         <p className="text-muted-foreground">
@@ -34,104 +30,123 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Quick Upload Buttons */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Upload</CardTitle>
-          <CardDescription>
-            Jump to the Add Result form for any class/test.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-          {CLASSES.map((cls) =>
-            TESTS.map((test) => (
-              <Button
-                key={`${cls}-${test}`}
-                variant="outline"
-                className="text-sm"
-                asChild
-              >
-                <Link
-                  href={`/admin/results/add?class=${cls}&test=${encodeURIComponent(
-                    test
-                  )}`}
-                >
-                  Class {cls} - {test}
-                </Link>
-              </Button>
-            ))
-          )}
-        </CardContent>
-      </Card>
+      {/* Navigation Buttons */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <Button asChild className="w-full">
+          <Link href="/admin/results">View All Results</Link>
+        </Button>
+        <Button asChild className="w-full" variant="secondary">
+          <Link href="/admin/results/add">Add Student Result</Link>
+        </Button>
+        <Button asChild className="w-full" variant="outline">
+          <Link href="/admin/students">Manage Students</Link>
+        </Button>
+      </div>
 
-      {/* Uploaded Results Matrix */}
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Students</CardTitle>
+            <CardDescription>Enrolled in all classes</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-semibold">256</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Tests</CardTitle>
+            <CardDescription>Across all subjects</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-semibold">18</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Uploads</CardTitle>
+            <CardDescription>In the last 7 days</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-semibold">5</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Results Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Result Upload Status</CardTitle>
-          <CardDescription>
-            Number of results uploaded for each class/test
-          </CardDescription>
+          <CardTitle>Recent Results</CardTitle>
+          <CardDescription>Latest 5 uploaded results</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border border-muted rounded-md">
-              <thead className="bg-muted">
-                <tr>
-                  <th className="p-2 text-left">Class</th>
-                  {TESTS.map((test) => (
-                    <th key={test} className="p-2 text-left">
-                      {test}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {CLASSES.map((cls) => (
-                  <tr key={cls} className="border-t">
-                    <td className="p-2 font-medium">Class {cls}</td>
-                    {TESTS.map((test) => {
-                      const count = uploadedResults[cls]?.[test] ?? 0;
-                      return (
-                        <td
-                          key={test}
-                          className={cn("p-2", count === 0 && "text-red-500")}
-                        >
-                          {count > 0 ? `${count} results` : "No data"}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Student</TableHead>
+                <TableHead>Class</TableHead>
+                <TableHead>Test</TableHead>
+                <TableHead>Marks</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[
+                { name: "Rahim", class: "8", test: "Mid-Term", marks: 82 },
+                { name: "Karim", class: "9", test: "Final", marks: 76 },
+                { name: "Hasan", class: "10", test: "Quiz", marks: 90 },
+                { name: "Rina", class: "7", test: "Mid-Term", marks: 88 },
+                { name: "Lima", class: "6", test: "Quiz", marks: 92 },
+              ].map((item, i) => (
+                <TableRow key={i}>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.class}</TableCell>
+                  <TableCell>{item.test}</TableCell>
+                  <TableCell>{item.marks}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
-      {/* Missing Result Warnings */}
+      {/* Session / Info Box */}
       <Card>
         <CardHeader>
-          <CardTitle>Missing Uploads</CardTitle>
-          <CardDescription>
-            Classes/tests with incomplete or missing data
-          </CardDescription>
+          <CardTitle>Session Info</CardTitle>
+          <CardDescription>Details about your admin account</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          {CLASSES.flatMap((cls) =>
-            TESTS.map((test) => {
-              const count = uploadedResults[cls]?.[test] ?? 0;
-              if (count === 0) {
-                return (
-                  <div key={`${cls}-${test}`} className="text-red-600">
-                    ⚠️ Class {cls} - {test} result not uploaded.
-                  </div>
-                );
-              }
-              return null;
-            })
-          )}
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
+          <p>
+            <strong>Username:</strong> {session?.user?.name ?? "admin"}
+          </p>
+          <p>
+            <strong>Email:</strong> {session?.user?.email ?? "N/A"}
+          </p>
+          <p>
+            <strong>Role:</strong> Administrator
+          </p>
         </CardContent>
       </Card>
+
+      {/* Footer Links */}
+      <div className="flex justify-end gap-4 text-sm text-muted-foreground">
+        <Link href="/admin/settings" className="hover:underline">
+          Settings
+        </Link>
+        <Link
+          href="https://wa.me/your-support"
+          target="_blank"
+          className="hover:underline"
+        >
+          Support
+        </Link>
+        <Link href="/login" className="hover:underline">
+          Logout
+        </Link>
+      </div>
     </div>
   );
 }

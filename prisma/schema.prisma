@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  fatherName   String
+  motherName   String
+  mobile       String
+  rollNumber   Int
+  bloodGroup BloodGroup?
+  address Address? 
+  isActive     Boolean       @default(true)
+  birthDate    DateTime?
+  images       Image?
+  classRecords ClassRecord[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([rollNumber])
+}
+
+
+model ClassRecord {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  student    Student     @relation(fields: [studentId], references: [id])
+  studentId  String      @db.ObjectId
+  className  ClassName   // ← Enum instead of free-text
+  year       Int
+  results    Result[]
+
+  @@unique([studentId, className, year]) // Prevent duplicate record per year/class
+  @@index([studentId])
+}
+
+model Result {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  classRecord    ClassRecord  @relation(fields: [classRecordId], references: [id])
+  classRecordId  String       @db.ObjectId
+  type           ResultType
+  subjects       Json
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([classRecordId])
+}
+
+enum ResultType {
+  MID_TERM @map("Mid Term")
+  FINAL    @map("Final")
+}
+
+
+enum ClassName {
+  CLASS_6  @map("Class 6")
+  CLASS_7  @map("Class 7")
+  CLASS_8  @map("Class 8")
+  CLASS_9  @map("Class 9")
+  CLASS_10 @map("Class 10")
+}
+
+
+type Image {
+  url      String
+  publicId String
+  alt      String?
+}
+
+enum Status {
+  ACTIVE @map("Active")
+  INACTIVE @map("Inactive")
+  GRADUATED @map("Graduated")
+  TRANSFERRED @map("Transferred")
+  DROPPED_OUT @map("Dropped Out")
+}
+enum BloodGroup {
+  A_POS    @map("A+")
+  A_NEG    @map("A-")
+  B_POS    @map("B+")
+  B_NEG    @map("B-")
+  AB_POS   @map("AB+")
+  AB_NEG   @map("AB-")
+  O_POS    @map("O+")
+  O_NEG    @map("O-")
+  UNKNOWN  @map("Unknown")
+}
+
+type Address {
+  houseOrRoad  String? 
+  villageOrArea String?
+  postOffice   String?  
+  upazila      String?  
+  district     String? 
+  division     String? 
+  postalCode   String?  
+
+}
