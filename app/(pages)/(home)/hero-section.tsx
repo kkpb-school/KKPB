@@ -1,29 +1,29 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Users } from "lucide-react";
-import Image from "next/image";
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { BookOpen, Users } from 'lucide-react';
+import Image from 'next/image';
 
 export function HeroSection() {
   return (
     <section className="relative py-16">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="flex flex-col justify-center space-y-6">
             <div className="space-y-4">
               <Badge variant="secondary" className="w-fit text-sm">
                 Excellence in Education Since 1985
               </Badge>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                K.K.P.B Secondary{" "}
+                K.K.P.B Secondary{' '}
                 <span className="text-primary">High School</span>
               </h1>
-              <p className="text-lg text-muted-foreground md:text-xl max-w-[600px]">
+              <p className="text-muted-foreground max-w-[600px] text-lg md:text-xl">
                 Nurturing young minds to become tomorrow&#39;s leaders through
                 quality education, character development, and innovative
                 learning experiences.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row">
               <Button size="lg" className="h-12 text-base">
                 <Users className="mr-2 h-5 w-5" />
                 Enroll Today
@@ -31,7 +31,7 @@ export function HeroSection() {
               <Button
                 variant="outline"
                 size="lg"
-                className="h-12 text-base bg-transparent"
+                className="h-12 bg-transparent text-base"
               >
                 <BookOpen className="mr-2 h-5 w-5" />
                 Virtual Tour

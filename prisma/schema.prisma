@@ -14,7 +14,6 @@ model Student {
   fatherName   String
   motherName   String
   mobile       String
-  rollNumber   Int
   bloodGroup BloodGroup?
   address Address? 
   isActive     Boolean       @default(true)
@@ -23,8 +22,6 @@ model Student {
   classRecords ClassRecord[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-
-  @@index([rollNumber])
 }
 
 
@@ -33,6 +30,7 @@ model ClassRecord {
   student    Student     @relation(fields: [studentId], references: [id])
   studentId  String      @db.ObjectId
   className  ClassName   // ← Enum instead of free-text
+  rollNumber Int
   year       Int
   results    Result[]
 

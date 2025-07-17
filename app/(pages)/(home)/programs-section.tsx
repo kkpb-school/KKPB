@@ -1,62 +1,62 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Calculator, Globe, Trophy } from "lucide-react";
+} from '@/components/ui/card';
+import { Calculator, Globe, Trophy } from 'lucide-react';
 
 export function ProgramsSection() {
   const programs = [
     {
       icon: Calculator,
-      title: "Science & Mathematics",
+      title: 'Science & Mathematics',
       description:
-        "Advanced courses in Physics, Chemistry, Biology, and Mathematics with hands-on laboratory experience.",
+        'Advanced courses in Physics, Chemistry, Biology, and Mathematics with hands-on laboratory experience.',
       subjects: [
-        "Advanced Mathematics",
-        "Physics & Chemistry Labs",
-        "Biology & Life Sciences",
-        "Computer Science",
+        'Advanced Mathematics',
+        'Physics & Chemistry Labs',
+        'Biology & Life Sciences',
+        'Computer Science',
       ],
     },
     {
       icon: Globe,
-      title: "Arts & Humanities",
+      title: 'Arts & Humanities',
       description:
-        "Comprehensive programs in literature, history, languages, and social sciences to develop critical thinking.",
+        'Comprehensive programs in literature, history, languages, and social sciences to develop critical thinking.',
       subjects: [
-        "English Literature",
-        "History & Geography",
-        "Foreign Languages",
-        "Social Studies",
+        'English Literature',
+        'History & Geography',
+        'Foreign Languages',
+        'Social Studies',
       ],
     },
     {
       icon: Trophy,
-      title: "Sports & Activities",
+      title: 'Sports & Activities',
       description:
-        "Extensive extracurricular programs including sports, arts, music, and leadership development activities.",
+        'Extensive extracurricular programs including sports, arts, music, and leadership development activities.',
       subjects: [
-        "Athletic Programs",
-        "Music & Drama",
-        "Student Council",
-        "Community Service",
+        'Athletic Programs',
+        'Music & Drama',
+        'Student Council',
+        'Community Service',
       ],
     },
   ];
 
   return (
-    <section id="programs" className="py-16 bg-muted/30">
+    <section id="programs" className="bg-muted/30 py-16">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col items-center text-center space-y-4 mb-16">
+        <div className="mb-16 flex flex-col items-center space-y-4 text-center">
           <Badge variant="secondary">Academic Programs</Badge>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl max-w-3xl">
+          <h2 className="max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             Comprehensive <span className="text-primary">Education</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+          <p className="text-muted-foreground max-w-3xl text-lg leading-relaxed">
             Our diverse academic programs are designed to cater to different
             interests and career paths, ensuring every student finds their
             passion and excels in their chosen field.
@@ -66,13 +66,13 @@ export function ProgramsSection() {
           {programs.map((program, index) => (
             <Card
               key={index}
-              className="h-full hover:shadow-lg transition-shadow"
+              className="h-full transition-shadow hover:shadow-lg"
             >
               <CardHeader className="space-y-4">
-                <program.icon className="h-12 w-12 text-primary" />
+                <program.icon className="text-primary h-12 w-12" />
                 <div>
                   <CardTitle className="text-xl">{program.title}</CardTitle>
-                  <CardDescription className="text-base mt-2">
+                  <CardDescription className="mt-2 text-base">
                     {program.description}
                   </CardDescription>
                 </div>
@@ -80,8 +80,8 @@ export function ProgramsSection() {
               <CardContent>
                 <ul className="space-y-2">
                   {program.subjects.map((subject, subIndex) => (
-                    <li key={subIndex} className="text-sm flex items-center">
-                      <span className="w-2 h-2 bg-primary rounded-full mr-3 flex-shrink-0" />
+                    <li key={subIndex} className="flex items-center text-sm">
+                      <span className="bg-primary mr-3 h-2 w-2 flex-shrink-0 rounded-full" />
                       {subject}
                     </li>
                   ))}

@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Globe } from "lucide-react"
-import Link from "next/link"
+import { Button } from '@/components/ui/button';
+import { Globe } from 'lucide-react';
+import Link from 'next/link';
 
 export function LanguageSwitcher() {
   return (
@@ -17,5 +17,5 @@ export function LanguageSwitcher() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

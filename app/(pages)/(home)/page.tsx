@@ -1,10 +1,10 @@
-import { HeroSection } from "@/app/(pages)/(home)/hero-section";
-import { StatsSection } from "@/app/(pages)/(home)/stats-section";
-import { AboutSection } from "@/app/(pages)/(home)/about-section";
-import { ProgramsSection } from "@/app/(pages)/(home)/programs-section";
-import { FacilitiesSection } from "@/app/(pages)/(home)/facilities-section";
-import { AchievementsSection } from "@/app/(pages)/(home)/achievements-section";
-import { ContactSection } from "@/app/(pages)/(home)/contact-section";
+import { HeroSection } from '@/app/(pages)/(home)/hero-section';
+import { StatsSection } from '@/app/(pages)/(home)/stats-section';
+import { AboutSection } from '@/app/(pages)/(home)/about-section';
+import { ProgramsSection } from '@/app/(pages)/(home)/programs-section';
+import { FacilitiesSection } from '@/app/(pages)/(home)/facilities-section';
+import { AchievementsSection } from '@/app/(pages)/(home)/achievements-section';
+import { ContactSection } from '@/app/(pages)/(home)/contact-section';
 
 export default function HomePage() {
   return (
