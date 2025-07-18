@@ -44,11 +44,15 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCreateStudent } from '@/services/students';
+import { toast } from 'sonner';
+import axios from 'axios';
 
 export default function AddStudentPage() {
   const router = useRouter();
+  const { mutate, isPending } = useCreateStudent();
 
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const ClassNames = [
     { value: 'CLASS_6', label: 'Class 6' },
@@ -105,12 +109,52 @@ export default function AddStudentPage() {
     },
   });
 
-  function handleImageChange(url: string | null) {
-    setImageUrl(url);
+  function handleImageChange(file: File | null) {
+    setImageFile(file);
   }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
+    toast.loading('Adding student...');
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if (value instanceof Date) {
+          formData.append(key, value.toISOString());
+        } else if (typeof value === 'number') {
+          formData.append(key, value.toString());
+        } else {
+          formData.append(key, value);
+        }
+      }
+    });
+
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    mutate(formData, {
+      onSuccess: () => {
+        form.reset();
+        setImageFile(null);
+        toast.dismiss();
+        toast.success('Student added successfully!');
+      },
+      onError: (error) => {
+        toast.dismiss();
+
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 409) {
+            toast.error('A student with this roll number already exists.');
+          } else if (error.response?.status === 400) {
+            toast.error('Invalid input. Please check your form.');
+          } else {
+            toast.error(`Server error (${error.response?.status})`);
+          }
+        } else {
+          toast.error('Something went wrong.');
+        }
+      },
+    });
   }
 
   return (
@@ -161,7 +205,9 @@ export default function AddStudentPage() {
                   </CardHeader>
                   <CardContent>
                     <ImageUpload
-                      currentImage={imageUrl}
+                      currentImage={
+                        imageFile ? URL.createObjectURL(imageFile) : null
+                      }
                       onImageChange={handleImageChange}
                     />
                   </CardContent>
@@ -548,9 +594,10 @@ export default function AddStudentPage() {
                   <Button
                     type="submit"
                     className="order-1 min-w-[120px] sm:order-2"
+                    disabled={isPending}
                   >
-                    <Save className="mr-2 h-4 w-4" />
-                    Add Student
+                    {isPending ? 'Adding...' : 'Add Student'}
+                    <Save className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </CardContent>

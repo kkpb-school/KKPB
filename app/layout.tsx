@@ -4,6 +4,8 @@ import './globals.css';
 import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
 import { Toaster } from 'sonner';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import TanstackProvider from '@/context/tanstack-provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,10 +32,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        {children}
-        <Footer />
-        <Toaster richColors />
+        <TanstackProvider>
+          <Header />
+          {children}
+          <Footer />
+          <Toaster richColors />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </TanstackProvider>
       </body>
     </html>
   );

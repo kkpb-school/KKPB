@@ -9,7 +9,7 @@ import { Upload, X, User } from 'lucide-react';
 import Image from 'next/image';
 
 interface ImageUploadProps {
-  onImageChange: (url: string | null) => void;
+  onImageChange: (file: File | null) => void;
   currentImage?: string | null;
 }
 
@@ -34,23 +34,30 @@ export function ImageUpload({ onImageChange, currentImage }: ImageUploadProps) {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setPreview(result);
-        onImageChange(result);
-      };
-      reader.readAsDataURL(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
+      onImageChange(file);
     }
   };
 
   const handleRemove = () => {
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
     setPreview(null);
     onImageChange(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (preview && preview.startsWith('blob:')) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   const handleClick = () => {
     fileInputRef.current?.click();

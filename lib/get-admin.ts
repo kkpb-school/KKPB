@@ -19,7 +19,7 @@ export async function getAdmin({
   }
 
   return {
-    id: 'admin', // required by NextAuth
+    id: 'admin',
     name: 'Administrator',
   };
 }
