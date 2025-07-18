@@ -37,3 +37,47 @@ export const ClassNames = [
   { value: 'CLASS_9', label: 'Class 9' },
   { value: 'CLASS_10', label: 'Class 10' },
 ];
+
+export interface Address {
+  houseOrRoad: string;
+  villageOrArea: string;
+  postOffice: string;
+  upazila: string;
+  district: string;
+  division: string;
+  postalCode: string;
+}
+
+export interface StudentImage {
+  url: string;
+  publicId: string;
+  alt: string;
+}
+
+export interface ClassRecord {
+  id: string;
+  studentId: string;
+  className: string;
+  rollNumber: number;
+  year: number;
+}
+
+export interface Student {
+  id: string;
+  name: string;
+  fatherName: string;
+  motherName: string;
+  mobile: string;
+  bloodGroup: string;
+  isActive: boolean;
+  birthDate: string;
+  createdAt: string;
+  updatedAt: string;
+  address: Address;
+  images: StudentImage;
+  classRecords: ClassRecord[];
+}
+
+export interface StudentListResponse {
+  json: Student[];
+}

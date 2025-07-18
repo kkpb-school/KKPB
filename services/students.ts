@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/lib/constants';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 export function useCreateStudent() {
@@ -14,4 +15,14 @@ export function useCreateStudent() {
   });
 
   return { mutate, isPending };
+}
+
+export function useStudentList() {
+  return useQuery({
+    queryKey: [QUERY_KEYS.STUDENT_LIST],
+    queryFn: async () => {
+      const response = await axios.get(`/api/admin/student/list`);
+      return response.data;
+    },
+  });
 }
