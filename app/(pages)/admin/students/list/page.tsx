@@ -56,11 +56,29 @@ type ViewMode = 'table' | 'grid';
 type FilterStatus = 'all' | 'active' | 'inactive';
 
 export default function StudentList() {
-  const { isPending, data, isError, refetch } = useStudentList();
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [filterClass, setFilterClass] = useState<string>('all');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  const {
+    isPending,
+    data,
+    isError,
+    refetch,
+    isFetching,
+  } = useStudentList({
+    page,
+    limit,
+    searchTerm,
+    filterStatus,
+    filterClass,
+  });
+
+  const students = data?.students || [];
+  const totalPages = data?.totalPages || 1;
 
   const calculateAge = (birthDate: string) => {
     return differenceInYears(new Date(), new Date(birthDate));
@@ -103,14 +121,20 @@ export default function StudentList() {
               Manage and view all student information
               {!isPending && data && (
                 <span className="ml-2 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium">
-                  {data.length} students
+                  {students.length} students
                 </span>
               )}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => refetch()} variant="outline">
-              <RefreshCw className="mr-2 h-4 w-4" />
+            <Button
+              onClick={() => refetch()}
+              variant="outline"
+              disabled={isFetching}
+            >
+              <RefreshCw
+                className={`mr-2 h-4 w-4 ${isFetching ? 'animate-spin' : ''}`}
+              />
               Refresh
             </Button>
             <Button asChild>
@@ -137,16 +161,20 @@ export default function StudentList() {
                 <Input
                   placeholder="Search by Student name..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                  }}
                   className="h-12 pl-12 text-base shadow-sm"
                 />
               </div>
               <div className="flex gap-3">
                 <Select
                   value={filterStatus}
-                  onValueChange={(value: FilterStatus) =>
-                    setFilterStatus(value)
-                  }
+                  onValueChange={(value: FilterStatus) => {
+                    setFilterStatus(value);
+                    setPage(1);
+                  }}
                 >
                   <SelectTrigger className="h-12 w-40 bg-white shadow-sm">
                     <SelectValue placeholder="Status" />
@@ -160,7 +188,13 @@ export default function StudentList() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Select value={filterClass} onValueChange={setFilterClass}>
+                <Select
+                  value={filterClass}
+                  onValueChange={(value) => {
+                    setFilterClass(value);
+                    setPage(1);
+                  }}
+                >
                   <SelectTrigger className="h-12 w-40 bg-white shadow-sm">
                     <SelectValue placeholder="Class" />
                   </SelectTrigger>
@@ -202,17 +236,85 @@ export default function StudentList() {
           <StudentListSkeleton viewMode={viewMode} />
         ) : viewMode === 'table' ? (
           <StudentTable
-            students={data || []}
+            students={students}
             calculateAge={calculateAge}
             formatDate={formatDate}
           />
         ) : (
           <StudentGrid
-            students={data || []}
+            students={students}
             calculateAge={calculateAge}
             formatDate={formatDate}
           />
         )}
+
+        <PaginationControls
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          itemsPerPage={limit}
+          onItemsPerPageChange={setLimit}
+        />
+      </div>
+    </div>
+  );
+}
+
+function PaginationControls({
+  currentPage,
+  totalPages,
+  onPageChange,
+  itemsPerPage,
+  onItemsPerPageChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  itemsPerPage: number;
+  onItemsPerPageChange: (limit: number) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-slate-600">Rows per page:</span>
+        <Select
+          value={itemsPerPage.toString()}
+          onValueChange={(value) => onItemsPerPageChange(parseInt(value, 10))}
+        >
+          <SelectTrigger className="h-9 w-20 bg-white shadow-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {[10, 20, 50, 100].map((limit) => (
+              <SelectItem key={limit} value={limit.toString()}>
+                {limit}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-slate-600">
+          Page {currentPage} of {totalPages}
+        </span>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

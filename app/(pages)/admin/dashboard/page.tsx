@@ -212,7 +212,7 @@ export default async function DashboardPage() {
                 variant="outline"
                 className="h-auto flex-col gap-2 bg-transparent p-6"
               >
-                <Link href="/admin/results/add">
+                <Link href="/admin/results">
                   <PenTool className="h-6 w-6" />
                   <span className="text-sm font-medium">Add Result</span>
                 </Link>

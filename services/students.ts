@@ -17,11 +17,35 @@ export function useCreateStudent() {
   return { mutate, isPending };
 }
 
-export function useStudentList() {
+export function useStudentList({
+  page,
+  limit,
+  searchTerm,
+  filterStatus,
+  filterClass,
+}: {
+  page: number;
+  limit: number;
+  searchTerm: string;
+  filterStatus: string;
+  filterClass: string;
+}) {
   return useQuery({
-    queryKey: [QUERY_KEYS.STUDENT_LIST],
+    queryKey: [
+      QUERY_KEYS.STUDENT_LIST,
+      { page, limit, searchTerm, filterStatus, filterClass },
+    ],
     queryFn: async () => {
-      const response = await axios.get(`/api/admin/student/list`);
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        search: searchTerm,
+        status: filterStatus,
+        class: filterClass,
+      });
+      const response = await axios.get(
+        `/api/admin/student/list?${params.toString()}`
+      );
       return response.data;
     },
   });
