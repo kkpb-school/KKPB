@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { BookOpen, X } from 'lucide-react';
-import { commonSubjects } from '../data';
+import { commonSubjects } from './data';
 
 interface SubjectManagementProps {
   selectedSubjects: string[];

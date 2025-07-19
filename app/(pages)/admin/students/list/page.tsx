@@ -63,13 +63,7 @@ export default function StudentList() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const {
-    isPending,
-    data,
-    isError,
-    refetch,
-    isFetching,
-  } = useStudentList({
+  const { isPending, data, isError, refetch, isFetching } = useStudentList({
     page,
     limit,
     searchTerm,
@@ -200,7 +194,7 @@ export default function StudentList() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Classes</SelectItem>
-                    {Object.entries(ClassList).map(([value, label]) => (
+                    {ClassList.map(({ value, label }) => (
                       <SelectItem key={value} value={value}>
                         {label}
                       </SelectItem>

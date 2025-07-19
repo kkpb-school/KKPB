@@ -1,20 +1,20 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
-import { ActionsBar } from './components/actions-bar';
-import { MarksEntry } from './components/marks-entry';
-import { PageHeader } from './components/page-header';
-import { StudentList } from './components/student-list';
-import { StudentSelection } from './components/student-selection';
-import { SubjectManagement } from './components/subject-management';
-import { TestConfiguration } from './components/test-configuration';
+import { ActionsBar } from './actions-bar';
+import { MarksEntry } from './marks-entry';
+import { PageHeader } from './page-header';
+import { StudentList } from './student-list';
+import { StudentSelection } from './student-selection';
+import { SubjectManagement } from './subject-management';
+import { TestConfiguration } from './test-configuration';
 import { mockStudents } from './data';
 import { Student, StudentResult } from './types';
 import { getGrade } from './utils';
 
-export default function AddResults() {
+function AddResults() {
   const searchParams = useSearchParams();
   const className = searchParams.get('class') || 'Class 6';
   const testType = searchParams.get('test') || 'Mid Term';
@@ -42,7 +42,7 @@ export default function AddResults() {
     setSelectedSubjects(selectedSubjects.filter((s) => s !== subject));
     setStudentResults(
       studentResults.map((result) => {
-        const { [subject]: removed, ...remainingSubjects } = result.subjects;
+        const { ...remainingSubjects } = result.subjects;
         const totalMarks = Object.values(remainingSubjects).reduce(
           (sum, subjectMarks) => sum + subjectMarks.total,
           0
@@ -210,5 +210,13 @@ export default function AddResults() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AddResultsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AddResults />
+    </Suspense>
   );
 }

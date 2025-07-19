@@ -32,7 +32,7 @@ import { ArrowLeft, Save, UserPlus, MapPin, CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { BloodGroups } from '@/lib/types';
+
 import {
   Form,
   FormControl,
@@ -47,20 +47,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateStudent } from '@/services/students';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { BloodGroups, ClassList, Genders } from '@/lib/constants';
 
 export default function AddStudentPage() {
   const router = useRouter();
   const { mutate, isPending } = useCreateStudent();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
-
-  const ClassNames = [
-    { value: 'CLASS_6', label: 'Class 6' },
-    { value: 'CLASS_7', label: 'Class 7' },
-    { value: 'CLASS_8', label: 'Class 8' },
-    { value: 'CLASS_9', label: 'Class 9' },
-    { value: 'CLASS_10', label: 'Class 10' },
-  ];
 
   const FormSchema = z.object({
     name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -74,9 +67,10 @@ export default function AddStudentPage() {
       .string()
       .min(11, { message: 'Mobile number must be at least 11 characters.' }),
     rollNumber: z.string().trim().min(1, 'Roll number is required'),
-    className: z.string({ message: 'Class name is required.' }),
+    className: z.string().min(1, { message: 'Class name is required.' }), // Changed to require actual selection
     year: z.number().min(2000, { message: 'Year must be 2000 or later.' }),
-    bloodGroup: z.string().optional(),
+    gender: z.string().optional().or(z.literal('')), // Allow empty string
+    bloodGroup: z.string().optional().or(z.literal('')), // Allow empty string
     birthDate: z.date().optional(),
     houseOrRoad: z.string().optional(),
     villageOrArea: z.string().optional(),
@@ -95,9 +89,10 @@ export default function AddStudentPage() {
       motherName: '',
       mobile: '',
       rollNumber: '',
-      className: undefined,
+      className: '',
       year: new Date().getFullYear(),
-      bloodGroup: undefined,
+      gender: '',
+      bloodGroup: '',
       birthDate: undefined,
       houseOrRoad: '',
       villageOrArea: '',
@@ -164,9 +159,9 @@ export default function AddStudentPage() {
         <div className="mb-6 flex flex-col justify-between gap-4 sm:mb-8 sm:flex-row sm:items-center">
           <div className="flex items-start space-x-4 sm:items-center">
             <Button variant="ghost" size="sm" asChild className="shrink-0">
-              <Link href="/admin/students">
+              <Link href="/admin/dashboard">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Back to Students</span>
+                <span className="hidden sm:inline">Back</span>
                 <span className="sm:hidden">Back</span>
               </Link>
             </Button>
@@ -339,7 +334,7 @@ export default function AddStudentPage() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {ClassNames.map((c) => (
+                                  {ClassList.map((c) => (
                                     <SelectItem key={c.value} value={c.value}>
                                       {c.label}
                                     </SelectItem>
@@ -377,7 +372,34 @@ export default function AddStudentPage() {
                       </h4>
                       <Separator />
 
-                      <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <FormField
+                          control={form.control}
+                          name="gender"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Gender</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="h-10">
+                                    <SelectValue placeholder="Select gender" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {Genders.map((gender) => (
+                                    <SelectItem key={gender} value={gender}>
+                                      {gender}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                         <FormField
                           control={form.control}
                           name="birthDate"

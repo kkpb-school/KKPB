@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const searchTerm = searchParams.get('search') || '';
     const status = searchParams.get('status');
     const studentClass = searchParams.get('class');
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {
       OR: [
         { name: { contains: searchTerm, mode: 'insensitive' } },
@@ -56,6 +56,7 @@ export async function GET(request: NextRequest) {
     } else {
       return NextResponse.json({ error: 'No students found' }, { status: 404 });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return NextResponse.json(
       { error: 'Something went wrong.' },

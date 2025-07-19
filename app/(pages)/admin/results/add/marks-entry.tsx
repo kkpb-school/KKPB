@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CheckSquare, FileText, Trash2, TrendingUp } from 'lucide-react';
-import { StudentResult } from '../types';
-import { getGrade } from '../utils';
+import { StudentResult } from './types';
+import { getGrade } from './utils';
 
 interface MarksEntryProps {
   studentResults: StudentResult[];

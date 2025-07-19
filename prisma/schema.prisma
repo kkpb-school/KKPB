@@ -14,8 +14,9 @@ model Student {
   fatherName   String
   motherName   String
   mobile       String
-  bloodGroup BloodGroup?
-  address Address? 
+  gender       Gender?
+  bloodGroup   BloodGroup?
+  address      Address?
   isActive     Boolean       @default(true)
   birthDate    DateTime?
   images       Image?
@@ -24,12 +25,11 @@ model Student {
   updatedAt    DateTime      @updatedAt
 }
 
-
 model ClassRecord {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  student    Student     @relation(fields: [studentId], references: [id])
-  studentId  String      @db.ObjectId
-  className  ClassName   // ← Enum instead of free-text
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  student    Student   @relation(fields: [studentId], references: [id])
+  studentId  String    @db.ObjectId
+  className  ClassName
   rollNumber Int
   year       Int
   results    Result[]
@@ -39,31 +39,55 @@ model ClassRecord {
 }
 
 model Result {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  classRecord    ClassRecord  @relation(fields: [classRecordId], references: [id])
-  classRecordId  String       @db.ObjectId
-  type           ResultType
-  subjects       Json
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  classRecord   ClassRecord @relation(fields: [classRecordId], references: [id])
+  classRecordId String      @db.ObjectId
+  type          ResultType
+  subjects      Json
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([classRecordId])
 }
 
 enum ResultType {
-  MID_TERM @map("Mid Term")
-  FINAL    @map("Final")
+  Mid_Term
+  Final
 }
-
 
 enum ClassName {
-  CLASS_6  @map("Class 6")
-  CLASS_7  @map("Class 7")
-  CLASS_8  @map("Class 8")
-  CLASS_9  @map("Class 9")
-  CLASS_10 @map("Class 10")
+  Class_6
+  Class_7
+  Class_8
+  Class_9
+  Class_10
 }
 
+enum BloodGroup {
+  A_Positive
+  A_Negative
+  B_Positive
+  B_Negative
+  AB_Positive
+  AB_Negative
+  O_Positive
+  O_Negative
+  Unknown
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum Status {
+  Active
+  Inactive
+  Graduated
+  Transferred
+  Dropped_out
+}
 
 type Image {
   url      String
@@ -71,32 +95,12 @@ type Image {
   alt      String?
 }
 
-enum Status {
-  ACTIVE @map("Active")
-  INACTIVE @map("Inactive")
-  GRADUATED @map("Graduated")
-  TRANSFERRED @map("Transferred")
-  DROPPED_OUT @map("Dropped Out")
-}
-enum BloodGroup {
-  A_POS    @map("A+")
-  A_NEG    @map("A-")
-  B_POS    @map("B+")
-  B_NEG    @map("B-")
-  AB_POS   @map("AB+")
-  AB_NEG   @map("AB-")
-  O_POS    @map("O+")
-  O_NEG    @map("O-")
-  UNKNOWN  @map("Unknown")
-}
-
 type Address {
-  houseOrRoad  String? 
+  houseOrRoad   String?
   villageOrArea String?
-  postOffice   String?  
-  upazila      String?  
-  district     String? 
-  division     String? 
-  postalCode   String?  
-
+  postOffice    String?
+  upazila       String?
+  district      String?
+  division      String?
+  postalCode    String?
 }

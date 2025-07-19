@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, Users } from 'lucide-react';
-import { Student } from '../types';
+import { Student } from './types';
 
 interface StudentSelectionProps {
   searchQuery: string;
