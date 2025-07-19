@@ -39,9 +39,7 @@ export const TestConfiguration = ({
           </div>
         </div>
         <div>
-          <Label className="text-xs font-medium text-gray-600">
-            Test Type
-          </Label>
+          <Label className="text-xs font-medium text-gray-600">Test Type</Label>
           <div className="mt-1">
             <Badge variant="outline" className="px-2 py-1 text-sm">
               {testType}

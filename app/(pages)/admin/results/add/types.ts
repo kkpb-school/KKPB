@@ -13,8 +13,37 @@ export interface StudentResult {
   percentage: number;
 }
 
+export interface ClassRecord {
+  id: string;
+  studentId: string;
+  className: string;
+  rollNumber: number;
+  year: number;
+}
+
 export interface Student {
   id: string;
   name: string;
-  rollNumber: number;
+  fatherName: string;
+  motherName: string;
+  mobile: string;
+  gender: string;
+  bloodGroup: string;
+  isActive: boolean;
+  birthDate: string;
+  address: {
+    houseOrRoad: string;
+    villageOrArea: string;
+    postOffice: string;
+    upazila: string;
+    district: string;
+    division: string;
+    postalCode: string;
+  };
+  images: {
+    url: string;
+    publicId: string;
+    alt: string;
+  };
+  classRecords: ClassRecord[]; // 👈 Add this line
 }

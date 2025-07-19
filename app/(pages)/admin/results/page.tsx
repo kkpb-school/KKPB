@@ -15,38 +15,48 @@ import {
 } from 'lucide-react';
 
 const classes = [
-  { id: 6, name: 'Class 6', students: 45, color: 'from-blue-500 to-blue-600' },
   {
-    id: 7,
+    id: 'Class_6',
+    name: 'Class 6',
+    students: 45,
+    color: 'from-blue-500 to-blue-600',
+  },
+  {
+    id: 'Class_7',
     name: 'Class 7',
     students: 42,
     color: 'from-green-500 to-green-600',
   },
   {
-    id: 8,
+    id: 'Class_8',
     name: 'Class 8',
     students: 38,
     color: 'from-purple-500 to-purple-600',
   },
   {
-    id: 9,
+    id: 'Class_9',
     name: 'Class 9',
     students: 35,
     color: 'from-orange-500 to-orange-600',
   },
-  { id: 10, name: 'Class 10', students: 40, color: 'from-red-500 to-red-600' },
+  {
+    id: 'Class_10',
+    name: 'Class 10',
+    students: 40,
+    color: 'from-red-500 to-red-600',
+  },
 ];
 
 const testTypes = [
   {
-    id: 'midterm',
+    id: 'Mid_Term',
     name: 'Mid Term',
     description: 'Mid-semester examination results',
     icon: Clock,
     color: 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100',
   },
   {
-    id: 'final',
+    id: 'Final',
     name: 'Year Final',
     description: 'Final examination results',
     icon: Award,

@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
+
 import { ActionsBar } from './actions-bar';
 import { MarksEntry } from './marks-entry';
 import { PageHeader } from './page-header';
@@ -10,9 +11,9 @@ import { StudentList } from './student-list';
 import { StudentSelection } from './student-selection';
 import { SubjectManagement } from './subject-management';
 import { TestConfiguration } from './test-configuration';
-import { mockStudents } from './data';
-import { Student, StudentResult } from './types';
+import { ClassRecord, Student, StudentResult } from './types';
 import { getGrade } from './utils';
+import { useStudentList } from '@/services/students';
 
 function AddResults() {
   const searchParams = useSearchParams();
@@ -26,17 +27,38 @@ function AddResults() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const {
+    isPending,
+    data: studentList,
+    isError,
+  } = useStudentList({
+    page: 1,
+    limit: 100,
+    searchTerm: searchQuery,
+    filterStatus: 'all',
+    filterClass: className,
+  });
+
   const totalMarksPerSubject = writtenMarks + mcqMarks;
 
-  const filteredStudents = mockStudents.filter((student) => {
-    const matchesSearch =
-      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.rollNumber.toString().includes(searchQuery);
-    const notAlreadyAdded = !studentResults.find(
-      (r) => r.studentId === student.id
-    );
-    return matchesSearch && notAlreadyAdded;
-  });
+  const filteredStudents = ((studentList?.students || []) as Student[]).filter(
+    (student: Student) => {
+      const rollNumber =
+        student.classRecords?.find(
+          (cr: ClassRecord) => cr.className === className
+        )?.rollNumber || 0;
+
+      const matchesSearch =
+        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        rollNumber.toString().includes(searchQuery);
+
+      const notAlreadyAdded = !studentResults.find(
+        (r) => r.studentId === student.id
+      );
+
+      return matchesSearch && notAlreadyAdded;
+    }
+  );
 
   const removeSubject = (subject: string) => {
     setSelectedSubjects(selectedSubjects.filter((s) => s !== subject));
@@ -65,10 +87,14 @@ function AddResults() {
   const addStudentResult = (student: Student) => {
     if (studentResults.find((r) => r.studentId === student.id)) return;
 
+    const rollNumber =
+      student.classRecords?.find((cr) => cr.className === className)
+        ?.rollNumber || 0;
+
     const newResult: StudentResult = {
       studentId: student.id,
       studentName: student.name,
-      rollNumber: student.rollNumber,
+      rollNumber,
       subjects: {},
       totalMarks: 0,
       percentage: 0,
@@ -162,6 +188,14 @@ function AddResults() {
     toast.success('Results submitted successfully!');
   };
 
+  if (isError) {
+    return (
+      <div className="py-4 text-center text-red-500">
+        Failed to load students.
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
       <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6">
@@ -185,6 +219,11 @@ function AddResults() {
           filteredStudents={filteredStudents}
           addStudentResult={addStudentResult}
         />
+        {isPending && (
+          <div className="flex justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-gray-500" />
+          </div>
+        )}
         {studentResults.length > 0 && selectedSubjects.length === 0 && (
           <StudentList
             studentResults={studentResults}

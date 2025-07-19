@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, Users } from 'lucide-react';
 import { Student } from './types';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { AvatarImage } from '@radix-ui/react-avatar';
 
 interface StudentSelectionProps {
   searchQuery: string;
@@ -35,23 +38,28 @@ export const StudentSelection = ({
         />
       </div>
 
-      <div className="grid max-h-48 grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid max-h-80 grid-cols-1 gap-4 overflow-y-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredStudents.length > 0 ? (
           filteredStudents.map((student) => (
             <Button
               key={student.id}
               variant="outline"
-              size="sm"
-              className="h-auto justify-start bg-transparent p-2 text-left"
+              className="h-auto transform rounded-xl border-2 border-gray-200 bg-gradient-to-br from-white to-gray-50 p-6 transition-all duration-200 hover:border-purple-300 hover:from-purple-50 hover:to-pink-50"
               onClick={() => addStudentResult(student)}
             >
-              <div className="w-full">
-                <div className="truncate text-xs font-medium">
+              <div className="space-y-2 text-center">
+                <Avatar className="mx-auto flex h-12 w-12 items-center justify-center">
+                  <AvatarImage src={student.images.url} />
+                  <AvatarFallback className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-lg font-bold text-white">
+                    {student.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="font-semibold text-gray-800">
                   {student.name}
                 </div>
-                <div className="text-xs text-gray-500">
-                  Roll: {student.rollNumber}
-                </div>
+                <Badge variant="secondary" className="text-xs">
+                  Roll: {student.classRecords[0].rollNumber}
+                </Badge>
               </div>
             </Button>
           ))

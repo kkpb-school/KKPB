@@ -13,7 +13,6 @@ export function StudentList({
   studentResults,
   removeStudentResult,
 }: StudentListProps) {
-  console.log(studentResults);
   return (
     <Card className="shadow-sm">
       <CardHeader className="pb-3">
