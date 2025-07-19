@@ -26,6 +26,7 @@ import {
   X,
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { toast } from 'sonner';
 
 // Mock data
 const mockStudents = [
@@ -222,26 +223,14 @@ export default function AddResults() {
         percentage: result.percentage,
         grade: getGrade(result.percentage).grade,
       })),
-      summary: {
-        totalStudents: studentResults.length,
-        totalSubjects: selectedSubjects.length,
-        averagePercentage:
-          studentResults.length > 0
-            ? studentResults.reduce(
-                (sum, result) => sum + result.percentage,
-                0
-              ) / studentResults.length
-            : 0,
-        submittedAt: new Date().toISOString(),
-      },
     };
 
-    console.log('=== SUBMISSION DATA ===');
-    console.log(JSON.stringify(submissionData, null, 2));
+    console.log(submissionData);
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSubmitting(false);
-    alert('Results saved successfully! Check console for logged data.');
+
+    toast.success('Results submitted successfully!');
   };
 
   const getClassStats = () => {
