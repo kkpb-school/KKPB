@@ -2,7 +2,6 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { toast } from 'sonner';
 
 import { ActionsBar } from './actions-bar';
 import { MarksEntry } from './marks-entry';
@@ -14,6 +13,7 @@ import { TestConfiguration } from './test-configuration';
 import { ClassRecord, Student, StudentResult } from './types';
 import { getGrade } from './utils';
 import { useStudentList } from '@/services/students';
+import { useAddResults } from '@/services/results';
 
 function AddResults() {
   const searchParams = useSearchParams();
@@ -157,9 +157,10 @@ function AddResults() {
     setStudentResults(studentResults.filter((r) => r.studentId !== studentId));
   };
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
+  const { mutateAsync: submitResults, isPending: isSubmittingResults } =
+    useAddResults();
 
+  const handleSubmit = async () => {
     const submissionData = {
       testInfo: {
         className,
@@ -180,12 +181,11 @@ function AddResults() {
       })),
     };
 
-    console.log(submissionData);
-
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-
-    toast.success('Results submitted successfully!');
+    try {
+      await submitResults(submissionData);
+    } catch (err) {
+      // Error is already handled in onError of the hook
+    }
   };
 
   if (isError) {
@@ -242,7 +242,7 @@ function AddResults() {
               removeStudentResult={removeStudentResult}
             />
             <ActionsBar
-              isSubmitting={isSubmitting}
+              isSubmitting={isSubmitting || isSubmittingResults}
               handleSubmit={handleSubmit}
             />
           </>
