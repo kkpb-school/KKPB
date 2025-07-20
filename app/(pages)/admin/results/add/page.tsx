@@ -25,7 +25,6 @@ function AddResults() {
   const [writtenMarks, setWrittenMarks] = useState(60);
   const [mcqMarks, setMcqMarks] = useState(40);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     isPending,
@@ -184,7 +183,7 @@ function AddResults() {
     try {
       await submitResults(submissionData);
     } catch (err) {
-      // Error is already handled in onError of the hook
+      console.error(err);
     }
   };
 
@@ -242,7 +241,7 @@ function AddResults() {
               removeStudentResult={removeStudentResult}
             />
             <ActionsBar
-              isSubmitting={isSubmitting || isSubmittingResults}
+              isSubmitting={isSubmittingResults}
               handleSubmit={handleSubmit}
             />
           </>
