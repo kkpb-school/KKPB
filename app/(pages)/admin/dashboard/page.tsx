@@ -31,7 +31,6 @@ import {
   LogOut,
   ArrowRight,
   GraduationCap,
-  BookOpen,
   Award,
 } from 'lucide-react';
 import { auth } from '@/auth';
@@ -202,7 +201,7 @@ export default async function DashboardPage() {
                 variant="outline"
                 className="h-auto flex-col gap-2 bg-transparent p-6"
               >
-                <Link href="/admin/results">
+                <Link href="/admin/results/view">
                   <Eye className="h-6 w-6" />
                   <span className="text-sm font-medium">View Results</span>
                 </Link>
@@ -385,52 +384,6 @@ export default async function DashboardPage() {
                     </Badge>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
-
-            {/* Admin Profile */}
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-indigo-600" />
-                  Admin Profile
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage
-                      src={user?.user?.image || ''}
-                      alt={user?.user?.name || ''}
-                    />
-                    <AvatarFallback className="bg-indigo-100 text-indigo-600">
-                      {user?.user?.name
-                        ?.split(' ')
-                        .map((n) => n[0])
-                        .join('') || 'AD'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold text-slate-900">
-                      {user?.user?.name}
-                    </p>
-                    <p className="text-sm text-slate-500">Administrator</p>
-                  </div>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Email:</span>
-                    <span className="font-medium">{user?.user?.email}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Role:</span>
-                    <Badge>Administrator</Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Last Login:</span>
-                    <span className="font-medium">Today</span>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>

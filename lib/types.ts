@@ -69,7 +69,7 @@ export interface Student {
   motherName: string;
   mobile: string;
   bloodGroup: string;
-  isActive: boolean;
+  status: string;
   birthDate: string;
   createdAt: string;
   updatedAt: string;

@@ -182,6 +182,13 @@ function AddResults() {
 
     try {
       await submitResults(submissionData);
+
+      // ✅ Clear all fields after successful submission
+      setSelectedSubjects([]);
+      setStudentResults([]);
+      setSearchQuery('');
+      setWrittenMarks(60);
+      setMcqMarks(40);
     } catch (err) {
       console.error(err);
     }
@@ -208,6 +215,7 @@ function AddResults() {
           setMcqMarks={setMcqMarks}
         />
         <SubjectManagement
+          className={className}
           selectedSubjects={selectedSubjects}
           setSelectedSubjects={setSelectedSubjects}
           removeSubject={removeSubject}

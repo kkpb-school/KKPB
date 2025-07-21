@@ -437,14 +437,11 @@ function StudentTable({
                     </TableCell>
                     <TableCell>
                       <Badge
-                        variant={student.isActive ? 'default' : 'secondary'}
-                        className={
-                          student.isActive
-                            ? 'bg-green-100 text-green-800 hover:bg-green-100'
-                            : 'bg-red-100 text-red-800 hover:bg-red-100'
+                        variant={
+                          student.status === 'Active' ? 'default' : 'secondary'
                         }
                       >
-                        {student.isActive ? 'Active' : 'Inactive'}
+                        {student.status}
                       </Badge>
                     </TableCell>
 
@@ -500,7 +497,6 @@ function StudentTable({
 function StudentGrid({
   students,
   calculateAge,
-  formatDate,
 }: {
   students: Student[];
   calculateAge: (birthDate: string) => number;
@@ -561,14 +557,11 @@ function StudentGrid({
                 </p>
                 <div className="mt-3 flex gap-2">
                   <Badge
-                    variant={student.isActive ? 'default' : 'secondary'}
-                    className={
-                      student.isActive
-                        ? 'bg-green-100 text-green-800 hover:bg-green-100'
-                        : 'bg-red-100 text-red-800 hover:bg-red-100'
+                    variant={
+                      student.status === 'Active' ? 'default' : 'secondary'
                     }
                   >
-                    {student.isActive ? 'Active' : 'Inactive'}
+                    {student.status}
                   </Badge>
                 </div>
               </div>
@@ -623,15 +616,6 @@ function StudentGrid({
                   {student.address.district}
                 </span>
               </div>
-            </div>
-
-            <div>
-              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                Joined
-              </p>
-              <p className="mt-1 text-sm text-slate-600">
-                {formatDate(student.createdAt)}
-              </p>
             </div>
 
             <div className="flex gap-2 border-t border-slate-100 pt-2">
