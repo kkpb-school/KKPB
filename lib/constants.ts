@@ -24,10 +24,10 @@ export const BloodGroups = [
 
 export const Genders = ['Male', 'Female', 'Other'];
 
-export const Status = {
-  ACTIVE: 'Active',
-  INACTIVE: 'Inactive',
-  GRADUATED: 'Graduated',
-  TRANSFERRED: 'Transferred',
-  DROPPED_OUT: 'Dropped Out',
-};
+export const Status = [
+  'Active',
+  'Inactive',
+  'Graduated',
+  'Transferred',
+  'Dropped Out',
+];

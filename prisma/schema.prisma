@@ -17,12 +17,12 @@ model Student {
   gender       Gender?
   bloodGroup   BloodGroup?
   address      Address?
-  isActive     Boolean       @default(true)
   birthDate    DateTime?
   images       Image?
   classRecords ClassRecord[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  status       Status        @default(Active)
 }
 
 model ClassRecord {

@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
         mobile,
         bloodGroup: bloodGroup as BloodGroup,
         birthDate: birthDate ? new Date(birthDate) : undefined,
-        isActive: true,
+        status: 'Active',
         address: {
           houseOrRoad,
           villageOrArea,

@@ -175,9 +175,10 @@ export default function StudentList() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
-                    {Object.entries(Status).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
+
+                    {Status.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
                       </SelectItem>
                     ))}
                   </SelectContent>
