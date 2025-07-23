@@ -39,6 +39,7 @@ interface ExamType {
   id: string;
   name: string;
   shortName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   description: string;
   color: string;
@@ -580,8 +581,9 @@ export default function AdminNavigation() {
                     No classes found
                   </h3>
                   <p className="mb-4 text-gray-600">
-                    No classes match "{searchQuery}". Try searching for "Six",
-                    "Seven", or just "6", "7".
+                    No classes match &#34;{searchQuery}&#34;. Try searching for
+                    &#34;Six&#34;, &#34;Seven&#34;, or just &#34;6&#34;,
+                    &#34;7&#34;.
                   </p>
                   <Button variant="outline" onClick={clearSearch}>
                     Clear Search

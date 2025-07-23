@@ -21,6 +21,7 @@ import { format, getYear } from 'date-fns';
 import React from 'react';
 import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { calculateGPAAndGrade, formatOrdinalDay } from '@/lib/utils';
+import Image from 'next/image';
 
 const testTypes = ['Mid_Term', 'Yearly'];
 const currentYear = getYear(new Date());
@@ -52,15 +53,10 @@ export default function SearchResults() {
     year: queryParams?.year,
   });
 
-  const contentRef = useRef<HTMLDivElement>(null);
-  const reactToPrintFn = useReactToPrint({ contentRef });
-
-  // Extract the actual result data from the API response
   const resultData = data;
 
   const handleSearch = () => {
     setError('');
-
     if (
       !searchData.rollNumber ||
       !searchData.className ||
@@ -70,11 +66,9 @@ export default function SearchResults() {
       setError('Please fill in all required fields');
       return;
     }
-
     setQueryParams(searchData);
   };
 
-  // Handle the API response
   React.useEffect(() => {
     if (isSuccess && data) {
       setShowResults(true);
@@ -104,10 +98,46 @@ export default function SearchResults() {
     return calculateGPAAndGrade(resultData.subjects);
   }, [resultData?.subjects]);
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    documentTitle: 'Result',
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Print-specific CSS */}
+      <style jsx>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          .print-content,
+          .print-content * {
+            visibility: visible;
+          }
+          .print-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+          }
+          @page {
+            margin: 1cm; /* Adjust page margins */
+          }
+          /* Hide browser-added headers and footers */
+          header,
+          footer,
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}</style>
+
       <div className="mx-auto max-w-4xl p-6">
-        <div className="mb-8 text-center">
+        <div className="no-print mb-8 text-center">
           <h1 className="mb-2 text-3xl font-bold text-gray-900">
             Student Result Portal
           </h1>
@@ -116,7 +146,7 @@ export default function SearchResults() {
           </p>
         </div>
 
-        <Card className="shadow-sm">
+        <Card className="no-print shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Search className="h-5 w-5" />
@@ -140,7 +170,6 @@ export default function SearchResults() {
                   className="mt-1"
                 />
               </div>
-
               <div>
                 <Label className="text-sm font-medium">Class *</Label>
                 <Select
@@ -161,7 +190,6 @@ export default function SearchResults() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
                 <Label className="text-sm font-medium">Examination *</Label>
                 <Select
@@ -182,7 +210,6 @@ export default function SearchResults() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
                 <Label className="text-sm font-medium">Year *</Label>
                 <Select
@@ -236,10 +263,9 @@ export default function SearchResults() {
           </CardContent>
         </Card>
 
-        {/* Action Buttons */}
         {showResults && (
-          <div className="mt-6 flex justify-center gap-4">
-            <Button onClick={reactToPrintFn} variant="outline">
+          <div className="no-print mt-6 flex justify-center gap-4">
+            <Button variant="outline" onClick={reactToPrintFn}>
               <Printer className="mr-2 h-4 w-4" />
               Print Result
             </Button>
@@ -250,24 +276,19 @@ export default function SearchResults() {
           </div>
         )}
 
-        {/* Result Display */}
         {resultData && (
           <div className="mt-8">
             <Card className="shadow-sm">
-              <CardHeader>
+              <CardHeader className="no-print">
                 <CardTitle>Result Sheet Preview</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="rounded-lg bg-gray-50 p-4">
-                  <div ref={contentRef}>
-                    <div
-                      className="mx-auto max-w-4xl bg-white p-8"
-                      style={{ fontFamily: 'Arial, sans-serif' }}
-                    >
-                      {/* Header */}
+                  <div ref={contentRef} className="print-content">
+                    <div className="mx-auto max-w-4xl bg-white p-8">
                       <div className="mb-6 border-b-2 border-black pb-4 text-center">
                         <h2 className="mb-1 text-lg font-bold">
-                          K.K.P.B Secondary High school
+                          K.K.P.B Secondary High School
                         </h2>
                         <p className="mb-1 text-sm">
                           KrishnaPur, Jhenaidah, Khulna
@@ -285,7 +306,6 @@ export default function SearchResults() {
                         </p>
                       </div>
 
-                      {/* Student Info */}
                       <div className="mb-6 flex">
                         <div className="flex-1 space-y-1 text-sm">
                           <div className="flex">
@@ -357,7 +377,7 @@ export default function SearchResults() {
 
                         <div className="ml-4">
                           {resultData.classRecord?.student?.images?.url ? (
-                            <img
+                            <Image
                               src={resultData.classRecord.student.images.url}
                               alt={
                                 resultData.classRecord.student.images.alt ||
@@ -373,7 +393,6 @@ export default function SearchResults() {
                         </div>
                       </div>
 
-                      {/* Subjects Table */}
                       <Table>
                         <TableHeader>
                           <TableRow>
@@ -402,6 +421,7 @@ export default function SearchResults() {
                         </TableHeader>
                         <tbody>
                           {Object.entries(resultData.subjects || {}).map(
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             ([subjectName, marks]: [string, any], index) => (
                               <tr key={index}>
                                 <td className="border px-2 py-1">
@@ -431,7 +451,6 @@ export default function SearchResults() {
                         </tbody>
                       </Table>
 
-                      {/* Signatures */}
                       <div className="mt-16 flex justify-between">
                         <div className="text-center">
                           <div className="w-40 border-t border-black pt-2">

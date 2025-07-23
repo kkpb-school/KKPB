@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     let createdCount = 0;
 
     for (const result of results) {
-      const { studentId, subjects, totalMarks } = result;
+      const { studentId, subjects } = result;
 
       const classRecord = await db.classRecord.findFirst({
         where: {
@@ -37,12 +37,6 @@ export async function POST(req: NextRequest) {
       // Prepare the subjects data with test configuration and total marks
       const subjectsWithTestInfo = {
         ...subjects,
-        testConfiguration: {
-          writtenMarks: testInfo.writtenMarks,
-          mcqMarks: testInfo.mcqMarks,
-          totalMarksPerSubject: testInfo.totalMarksPerSubject,
-          totalStudentMarks: totalMarks,
-        },
       };
 
       const existingResult = await db.result.findFirst({
@@ -64,7 +58,7 @@ export async function POST(req: NextRequest) {
             maxMcqMark: number;
             maxTotalMark: number;
             grade: string;
-          } & { testConfiguration?: any }
+          }
         >;
 
         const updatedSubjects = {

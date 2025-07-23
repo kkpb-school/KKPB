@@ -63,7 +63,7 @@ function AddResults() {
     setSelectedSubjects(selectedSubjects.filter((s) => s !== subject));
     setStudentResults(
       studentResults.map((result) => {
-        const { [subject]: _, ...remainingSubjects } = result.subjects;
+        const { ...remainingSubjects } = result.subjects;
         const totalMarks = Object.values(remainingSubjects).reduce(
           (sum, subjectMarks) => sum + subjectMarks.total,
           0
@@ -174,6 +174,7 @@ function AddResults() {
             };
             return acc;
           },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           {} as Record<string, any>
         ),
         totalMarks: result.totalMarks,

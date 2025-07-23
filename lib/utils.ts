@@ -38,7 +38,7 @@ export function formatOrdinalDay(day: number) {
 }
 
 // utils/gpaCalculator.ts
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function calculateGPAAndGrade(subjects: Record<string, any>) {
   const subjectList = Object.values(subjects || {});
 
