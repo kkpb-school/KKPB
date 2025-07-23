@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
     const fatherName = getFormStringValue(formData, 'fatherName');
     const motherName = getFormStringValue(formData, 'motherName');
     const mobile = getFormStringValue(formData, 'mobile');
+    const gender = getFormStringValue(formData, 'gender');
     const rollNumber = getFormNumberValue(formData, 'rollNumber');
     const className = getFormStringValue(formData, 'className');
     const year = getFormNumberValue(formData, 'year');
@@ -84,9 +85,10 @@ export async function POST(req: NextRequest) {
         fatherName,
         motherName,
         mobile,
-        bloodGroup: bloodGroup as BloodGroup,
+        bloodGroup: bloodGroup ? (bloodGroup as BloodGroup) : undefined,
         birthDate: birthDate ? new Date(birthDate) : undefined,
         status: 'Active',
+        gender: gender as 'Male' | 'Female' | 'Other',
         address: {
           houseOrRoad,
           villageOrArea,

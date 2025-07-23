@@ -69,7 +69,7 @@ export default function AddStudentPage() {
     rollNumber: z.string().trim().min(1, 'Roll number is required'),
     className: z.string().min(1, { message: 'Class name is required.' }), // Changed to require actual selection
     year: z.number().min(2000, { message: 'Year must be 2000 or later.' }),
-    gender: z.string().optional().or(z.literal('')), // Allow empty string
+    gender: z.enum(['Male', 'Female', 'Other']),
     bloodGroup: z.string().optional().or(z.literal('')), // Allow empty string
     birthDate: z.date().optional(),
     houseOrRoad: z.string().optional(),
@@ -91,7 +91,7 @@ export default function AddStudentPage() {
       rollNumber: '',
       className: '',
       year: new Date().getFullYear(),
-      gender: '',
+      gender: undefined,
       bloodGroup: '',
       birthDate: undefined,
       houseOrRoad: '',

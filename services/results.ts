@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/lib/constants';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'sonner';
 
@@ -15,17 +16,8 @@ interface AddResultsPayload {
     studentId: string;
     studentName: string;
     rollNumber: number;
-    subjects: Record<
-      string,
-      {
-        written: number;
-        mcq: number;
-        total: number;
-      }
-    >;
+    subjects: Record<string, any>;
     totalMarks: number;
-    percentage: number;
-    grade: string;
   }[];
 }
 
@@ -42,5 +34,32 @@ export function useAddResults() {
         }
       );
     },
+  });
+}
+
+interface GetResultParams {
+  className?: string;
+  roll?: string;
+  test?: string;
+  year?: string;
+}
+
+export function useGetResults(params: GetResultParams) {
+  const { className, roll, test, year } = params;
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.STUDENT_RESULTS, className, roll, test, year],
+    queryFn: async () => {
+      const response = await axios.get('/api/results', {
+        params: {
+          class: className,
+          roll,
+          test,
+          year,
+        },
+      });
+      return response.data;
+    },
+    enabled: !!(className && roll && test && year),
   });
 }

@@ -53,18 +53,6 @@ export const MarksEntry = ({
                 <h3 className="text-sm font-semibold sm:text-base">
                   {result.studentName}
                 </h3>
-                {result.totalMarks > 0 && (
-                  <div className="mt-1 flex items-center gap-2">
-                    <Badge
-                      className={`${getGrade(result.percentage).color} px-2 py-0.5 text-xs text-white`}
-                    >
-                      {getGrade(result.percentage).grade}
-                    </Badge>
-                    <span className="text-xs text-gray-600">
-                      {result.percentage.toFixed(1)}%
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
             <Button
@@ -84,13 +72,22 @@ export const MarksEntry = ({
                 mcq: 0,
                 total: 0,
               };
+              const subjectPercentage =
+                (subjectMarks.total / totalMarksPerSubject) * 100;
               return (
                 <div key={subject} className="rounded-lg bg-gray-50 p-3">
                   <div className="mb-2 flex items-center justify-between">
                     <h4 className="text-sm font-medium">{subject}</h4>
-                    <Badge variant="outline" className="text-xs">
-                      {subjectMarks.total}/{totalMarksPerSubject}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        className={`${getGrade(subjectPercentage).color} px-2 py-0.5 text-xs text-white`}
+                      >
+                        {getGrade(subjectPercentage).grade}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {subjectMarks.total}/{totalMarksPerSubject}
+                      </Badge>
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
@@ -145,24 +142,10 @@ export const MarksEntry = ({
 
           {result.totalMarks > 0 && (
             <div className="rounded-lg bg-blue-50 p-3">
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div>
-                  <div className="text-xs text-gray-600">Total</div>
-                  <div className="text-lg font-bold text-blue-600">
-                    {result.totalMarks}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs text-gray-600">Percentage</div>
-                  <div className="text-lg font-bold text-green-600">
-                    {result.percentage.toFixed(1)}%
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs text-gray-600">Grade</div>
-                  <div className="text-lg font-bold text-purple-600">
-                    {getGrade(result.percentage).grade}
-                  </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-600">Total Marks</div>
+                <div className="text-lg font-bold text-blue-600">
+                  {result.totalMarks}
                 </div>
               </div>
             </div>

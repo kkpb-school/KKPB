@@ -1,5 +1,6 @@
 export const QUERY_KEYS = {
   STUDENT_LIST: 'student-list',
+  STUDENT_RESULTS: 'student-results',
 };
 
 export const ClassList = [

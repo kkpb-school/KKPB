@@ -63,21 +63,15 @@ function AddResults() {
     setSelectedSubjects(selectedSubjects.filter((s) => s !== subject));
     setStudentResults(
       studentResults.map((result) => {
-        const { ...remainingSubjects } = result.subjects;
+        const { [subject]: _, ...remainingSubjects } = result.subjects;
         const totalMarks = Object.values(remainingSubjects).reduce(
           (sum, subjectMarks) => sum + subjectMarks.total,
           0
         );
-        const totalPossibleMarks =
-          (selectedSubjects.length - 1) * totalMarksPerSubject;
         return {
           ...result,
           subjects: remainingSubjects,
           totalMarks,
-          percentage:
-            totalPossibleMarks > 0
-              ? (totalMarks / totalPossibleMarks) * 100
-              : 0,
         };
       })
     );
@@ -96,7 +90,6 @@ function AddResults() {
       rollNumber,
       subjects: {},
       totalMarks: 0,
-      percentage: 0,
     };
 
     setStudentResults([...studentResults, newResult]);
@@ -133,18 +126,11 @@ function AddResults() {
             (sum, subjectMarks) => sum + subjectMarks.total,
             0
           );
-          const totalPossibleMarks =
-            selectedSubjects.length * totalMarksPerSubject;
-          const percentage =
-            totalPossibleMarks > 0
-              ? (totalMarks / totalPossibleMarks) * 100
-              : 0;
 
           return {
             ...result,
             subjects: updatedSubjects,
             totalMarks,
-            percentage,
           };
         }
         return result;
@@ -173,17 +159,30 @@ function AddResults() {
         studentId: result.studentId,
         studentName: result.studentName,
         rollNumber: result.rollNumber,
-        subjects: result.subjects,
+        subjects: Object.keys(result.subjects).reduce(
+          (acc, subject) => {
+            const subjectMarks = result.subjects[subject];
+            acc[subject] = {
+              writtenMark: subjectMarks.written,
+              mcqMark: subjectMarks.mcq,
+              totalMark: subjectMarks.total,
+              maxWrittenMark: writtenMarks,
+              maxMcqMark: mcqMarks,
+              maxTotalMark: totalMarksPerSubject,
+              grade: getGrade((subjectMarks.total / totalMarksPerSubject) * 100)
+                .grade,
+            };
+            return acc;
+          },
+          {} as Record<string, any>
+        ),
         totalMarks: result.totalMarks,
-        percentage: result.percentage,
-        grade: getGrade(result.percentage).grade,
       })),
     };
+    console.log(submissionData);
 
     try {
       await submitResults(submissionData);
-
-      // ✅ Clear all fields after successful submission
       setSelectedSubjects([]);
       setStudentResults([]);
       setSearchQuery('');
