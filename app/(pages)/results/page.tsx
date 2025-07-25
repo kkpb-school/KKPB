@@ -360,8 +360,11 @@ export default function SearchResults() {
                             </span>
                           </div>
                           <div className="flex">
+
+
+
                             <span className="w-28 font-medium">GPA:</span>
-                            <span className="capitalize">{gpa}</span>
+                            <span className="capitalize">{grade === 'F' ? 'N/A': gpa}</span>
                           </div>
                           <div className="flex">
                             <span className="w-28 font-medium">Grade:</span>
@@ -383,6 +386,8 @@ export default function SearchResults() {
                                 resultData.classRecord.student.images.alt ||
                                 'Student Photo'
                               }
+                              height={100}
+                              width={100}
                               className="h-24 w-20 border object-cover"
                             />
                           ) : (
