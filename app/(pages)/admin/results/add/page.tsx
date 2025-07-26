@@ -39,8 +39,8 @@ function AddResults() {
   });
 
   const totalMarksPerSubject = writtenMarks + mcqMarks;
-
-  const filteredStudents = ((studentList?.students || []) as Student[]).filter(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const filteredStudents = ((studentList?.students || []) as any[]).filter(
     (student: Student) => {
       const rollNumber =
         student.classRecords?.find(
