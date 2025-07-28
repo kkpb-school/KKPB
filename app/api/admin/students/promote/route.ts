@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
 import { auth } from '@/auth';
+import { db } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +24,10 @@ export async function POST(req: Request) {
     });
 
     if (existingRecord) {
-      return new NextResponse('Roll number already exists for this class and year', { status: 409 });
+      return new NextResponse(
+        'Roll number already exists for this class and year',
+        { status: 409 },
+      );
     }
 
     const newClassRecord = await db.classRecord.create({
@@ -37,8 +40,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(newClassRecord);
+    // biome-ignore lint: unused variable for future use
   } catch (error) {
-    console.log('[PROMOTE_STUDENT]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

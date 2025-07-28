@@ -1,5 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
-import { usePromoteStudent } from '@/services/students';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,6 +8,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -18,11 +18,12 @@ import {
 } from '@/components/ui/select';
 import { ClassList } from '@/lib/constants';
 import type { Student } from '@/lib/types';
+import { usePromoteStudent } from '@/services/students';
 
 export function PromoteStudent({ student }: { student: Student }) {
   const [isOpen, setIsOpen] = useState(false);
   const [promotionType, setPromotionType] = useState<'promote' | 'repeat'>(
-    'promote'
+    'promote',
   );
 
   // 1. Find the most recent class record by sorting by year
@@ -40,7 +41,7 @@ export function PromoteStudent({ student }: { student: Student }) {
       return null;
     }
     const currentClassIndex = ClassList.findIndex(
-      (c) => c.value === latestClassRecord.className
+      (c) => c.value === latestClassRecord.className,
     );
     // If the student is not in the last class, return the next one
     if (currentClassIndex > -1 && currentClassIndex < ClassList.length - 1) {
@@ -52,10 +53,10 @@ export function PromoteStudent({ student }: { student: Student }) {
 
   // 3. Initialize the year state. Default to the year after the latest record.
   const [year, setYear] = useState(() =>
-    latestClassRecord ? latestClassRecord.year + 1 : new Date().getFullYear()
+    latestClassRecord ? latestClassRecord.year + 1 : new Date().getFullYear(),
   );
   const [rollNumber, setRollNumber] = useState(() =>
-    latestClassRecord ? latestClassRecord.rollNumber : undefined
+    latestClassRecord ? latestClassRecord.rollNumber : undefined,
   );
 
   // Reset the year, roll number, and promotion type when the dialog is opened
@@ -64,10 +65,10 @@ export function PromoteStudent({ student }: { student: Student }) {
       setYear(
         latestClassRecord
           ? latestClassRecord.year + 1
-          : new Date().getFullYear()
+          : new Date().getFullYear(),
       );
       setRollNumber(
-        latestClassRecord ? latestClassRecord.rollNumber : undefined
+        latestClassRecord ? latestClassRecord.rollNumber : undefined,
       );
       setPromotionType('promote'); // Reset to default promotion type
     }
@@ -93,13 +94,14 @@ export function PromoteStudent({ student }: { student: Student }) {
         studentId: student.id,
         className: targetClassName,
         year: targetYear,
+        // biome-ignore lint/style/noNonNullAssertion: value is guaranteed after previous check
         rollNumber: rollNumber!,
       },
       {
         onSuccess: () => {
           setIsOpen(false); // Close dialog on success
         },
-      }
+      },
     );
   };
 
@@ -124,10 +126,14 @@ export function PromoteStudent({ student }: { student: Student }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className="w-full text-left" disabled={!isPromotionPossible}>
+        <button
+          className='w-full text-left'
+          disabled={!isPromotionPossible}
+          type='button'
+        >
           Promote Student
           {!isPromotionPossible && promotionType === 'promote' && (
-            <span className="text-muted-foreground text-xs"> (Max class)</span>
+            <span className='text-muted-foreground text-xs'> (Max class)</span>
           )}
         </button>
       </DialogTrigger>
@@ -135,9 +141,9 @@ export function PromoteStudent({ student }: { student: Student }) {
         <DialogHeader>
           <DialogTitle>Promote {student.name}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className='space-y-4'>
           <div>
-            <label className="text-sm font-medium">Current Class</label>
+            <Label>Current Class</Label>
             <Input
               disabled
               value={
@@ -151,7 +157,7 @@ export function PromoteStudent({ student }: { student: Student }) {
           </div>
 
           <div>
-            <label className="text-sm font-medium">Promotion Type</label>
+            <Label>Promotion Type</Label>
             <Select
               onValueChange={(value: 'promote' | 'repeat') =>
                 setPromotionType(value)
@@ -159,14 +165,14 @@ export function PromoteStudent({ student }: { student: Student }) {
               value={promotionType}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select promotion type" />
+                <SelectValue placeholder='Select promotion type' />
               </SelectTrigger>
               <SelectContent>
                 {isPromotionPossible && (
-                  <SelectItem value="promote">Promote to next class</SelectItem>
+                  <SelectItem value='promote'>Promote to next class</SelectItem>
                 )}
                 {isRepeatPossible && (
-                  <SelectItem value="repeat">
+                  <SelectItem value='repeat'>
                     Stay in same class, update year
                   </SelectItem>
                 )}
@@ -175,9 +181,9 @@ export function PromoteStudent({ student }: { student: Student }) {
           </div>
 
           <div>
-            <label className="text-sm font-medium">
+            <Label>
               {promotionType === 'promote' ? 'New Class' : 'Current Class'}
-            </label>
+            </Label>
             <Input
               disabled
               value={
@@ -193,30 +199,30 @@ export function PromoteStudent({ student }: { student: Student }) {
           </div>
 
           <div>
-            <label htmlFor="year" className="text-sm font-medium">
+            <label htmlFor='year' className='text-sm font-medium'>
               Promotion Year
             </label>
             <Input
-              id="year"
-              type="number"
+              id='year'
+              type='number'
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value, 10))}
               min={latestClassRecord ? latestClassRecord.year + 1 : undefined}
             />
             {(isYearInvalid || isYearInvalidForRepeat) && (
-              <p className="text-xs text-red-600">
+              <p className='text-xs text-red-600'>
                 Year must be after {latestClassRecord?.year}
               </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="rollNumber" className="text-sm font-medium">
+            <label htmlFor='rollNumber' className='text-sm font-medium'>
               Roll Number
             </label>
             <Input
-              id="rollNumber"
-              type="number"
+              id='rollNumber'
+              type='number'
               value={rollNumber}
               onChange={(e) => setRollNumber(parseInt(e.target.value, 10))}
               required

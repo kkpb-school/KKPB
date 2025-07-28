@@ -2,7 +2,8 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
-
+import { useAddResults } from '@/services/results';
+import { useStudentList } from '@/services/students';
 import { ActionsBar } from './actions-bar';
 import { MarksEntry } from './marks-entry';
 import { PageHeader } from './page-header';
@@ -10,10 +11,8 @@ import { StudentList } from './student-list';
 import { StudentSelection } from './student-selection';
 import { SubjectManagement } from './subject-management';
 import { TestConfiguration } from './test-configuration';
-import { ClassRecord, Student, StudentResult } from './types';
+import type { ClassRecord, Student, StudentResult } from './types';
 import { getGrade } from './utils';
-import { useStudentList } from '@/services/students';
-import { useAddResults } from '@/services/results';
 
 function AddResults() {
   const searchParams = useSearchParams();
@@ -39,12 +38,12 @@ function AddResults() {
   });
 
   const totalMarksPerSubject = writtenMarks + mcqMarks;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: we don't no the type
   const filteredStudents = ((studentList?.students || []) as any[]).filter(
     (student: Student) => {
       const rollNumber =
         student.classRecords?.find(
-          (cr: ClassRecord) => cr.className === className
+          (cr: ClassRecord) => cr.className === className,
         )?.rollNumber || 0;
 
       const matchesSearch =
@@ -52,11 +51,11 @@ function AddResults() {
         rollNumber.toString().includes(searchQuery);
 
       const notAlreadyAdded = !studentResults.find(
-        (r) => r.studentId === student.id
+        (r) => r.studentId === student.id,
       );
 
       return matchesSearch && notAlreadyAdded;
-    }
+    },
   );
 
   const removeSubject = (subject: string) => {
@@ -66,14 +65,14 @@ function AddResults() {
         const { ...remainingSubjects } = result.subjects;
         const totalMarks = Object.values(remainingSubjects).reduce(
           (sum, subjectMarks) => sum + subjectMarks.total,
-          0
+          0,
         );
         return {
           ...result,
           subjects: remainingSubjects,
           totalMarks,
         };
-      })
+      }),
     );
   };
 
@@ -99,7 +98,7 @@ function AddResults() {
     studentId: string,
     subject: string,
     type: 'written' | 'mcq',
-    mark: number
+    mark: number,
   ) => {
     setStudentResults(
       studentResults.map((result) => {
@@ -124,7 +123,7 @@ function AddResults() {
           };
           const totalMarks = Object.values(updatedSubjects).reduce(
             (sum, subjectMarks) => sum + subjectMarks.total,
-            0
+            0,
           );
 
           return {
@@ -134,7 +133,7 @@ function AddResults() {
           };
         }
         return result;
-      })
+      }),
     );
   };
 
@@ -174,37 +173,32 @@ function AddResults() {
             };
             return acc;
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          {} as Record<string, any>
+          //  biome-ignore lint/suspicious/noExplicitAny: we don't no the type
+          {} as Record<string, any>,
         ),
         totalMarks: result.totalMarks,
       })),
     };
-    console.log(submissionData);
 
-    try {
-      await submitResults(submissionData);
-      setSelectedSubjects([]);
-      setStudentResults([]);
-      setSearchQuery('');
-      setWrittenMarks(60);
-      setMcqMarks(40);
-    } catch (err) {
-      console.error(err);
-    }
+    await submitResults(submissionData);
+    setSelectedSubjects([]);
+    setStudentResults([]);
+    setSearchQuery('');
+    setWrittenMarks(60);
+    setMcqMarks(40);
   };
 
   if (isError) {
     return (
-      <div className="py-4 text-center text-red-500">
+      <div className='py-4 text-center text-red-500'>
         Failed to load students.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
-      <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6">
+    <div className='min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6'>
+      <div className='mx-auto max-w-6xl space-y-4 sm:space-y-6'>
         <PageHeader />
         <TestConfiguration
           className={className}
@@ -227,8 +221,8 @@ function AddResults() {
           addStudentResult={addStudentResult}
         />
         {isPending && (
-          <div className="flex justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-gray-500" />
+          <div className='flex justify-center'>
+            <div className='h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-gray-500' />
           </div>
         )}
         {studentResults.length > 0 && selectedSubjects.length === 0 && (
